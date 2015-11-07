@@ -12,6 +12,7 @@
       "email": "olgert.vaskevich@gmail.com"
     }
   ],
+  "type": "yii2-extension",
   "require": {
     "yiisoft/yii2": "*"
   },
