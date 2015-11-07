@@ -53,11 +53,11 @@ abstract class ExtARController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = $this->getModel();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $model = $this->getModel();
+        $dataProvider = $model->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
+        return $this->render('@olgert/yii2/views/index', [
+            'model' => $model,
             'dataProvider' => $dataProvider,
         ]);
     }

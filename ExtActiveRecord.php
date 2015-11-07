@@ -2,6 +2,7 @@
 
 namespace olgert\yii2;
 
+use yii;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 
@@ -20,6 +21,14 @@ abstract class ExtActiveRecord extends ActiveRecord
      * @return \yii\db\ActiveQuery
      */
     abstract public function getSearchQuery( $params );
+
+    /**
+     * @return string
+     */
+    public function getHumanName()
+    {
+        return Yii::t('app', substr($this->className(), strrpos($this->className(), '\\') + 1));
+    }
 
     /**
      * @param bool $insert
