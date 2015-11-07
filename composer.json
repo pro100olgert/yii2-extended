@@ -1,0 +1,23 @@
+{
+  "name": "olgert/yii2-extended",
+  "version": "1.0.0",
+  "description": "Yii2 extended version",
+  "keywords": [
+    "yii2"
+  ],
+  "license": "CC-0",
+  "authors": [
+    {
+      "name": "Olgert Vaskevich",
+      "email": "olgert.vaskevich@gmail.com"
+    }
+  ],
+  "require": {
+    "yiisoft/yii2": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "olgert\\yii2\\": ""
+    }
+  }
+}
