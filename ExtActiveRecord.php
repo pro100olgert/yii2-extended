@@ -52,9 +52,9 @@ abstract class ExtActiveRecord extends ActiveRecord
     {
         $scenarios = parent::scenarios();
 
-        return [
-            self::SCENARIO_SEARCH => $scenarios[parent::SCENARIO_DEFAULT],
-        ];
+        $scenarios[self::SCENARIO_SEARCH] = $scenarios[parent::SCENARIO_DEFAULT];
+
+        return $scenarios;
     }
 
     /**

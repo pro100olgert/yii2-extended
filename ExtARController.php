@@ -6,6 +6,7 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use kartik\widgets\ActiveForm;
 
 /**
  * Class ExtARController
@@ -15,8 +16,23 @@ use yii\web\NotFoundHttpException;
  */
 abstract class ExtARController extends Controller
 {
-    protected $form;
-    protected $gridView;
+    CONST INPUT_TEXT     = 'text';
+    CONST INPUT_TEXTAREA = 'textarea';
+    CONST INPUT_SELECT   = 'select';
+    CONST INPUT_SWITCHER = 'switcher';
+
+    /**
+     * @var array
+     */
+    protected $formFields = [];
+    /**
+     * @var array
+     */
+    protected $gridColumns = [];
+    /**
+     * @var array
+     */
+    private $actionButtons = [];
 
     /**
      * @return string Name of a model
@@ -25,6 +41,13 @@ abstract class ExtARController extends Controller
     abstract public function getModelName();
 
     abstract public function initScopes();
+
+    public function init()
+    {
+        parent::init();
+
+        $this->initScopes();
+    }
 
     public function behaviors()
     {
@@ -36,6 +59,52 @@ abstract class ExtARController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function addActionButton( $name, $func )
+    {
+        $this->actionButtons[$name] = $func;
+    }
+
+    private function mergeActionButtons()
+    {
+        $buttons = [
+            'delete' => '{delete}',
+            'update' => '{update}',
+        ];
+        foreach( $this->actionButtons as $actionButton => $func )
+        {
+            $buttons[$actionButton] = '{' . $actionButton . '}';
+        }
+
+        $template = implode('  ', array_reverse($buttons));
+
+        $this->gridColumns[] = [
+            'class'    => 'kartik\grid\ActionColumn',
+            'template' => $template,
+            'buttons'  => $this->actionButtons,
+        ];
+    }
+
+    private function addFormField( $name, $type, $options = [] )
+    {
+        $field = new \stdClass();
+
+        $field->name    = $name;
+        $field->type    = $type;
+        $field->options = $options;
+
+        $this->formFields[] = $field;
+    }
+
+    public function addTextField( $name, $options = [] )
+    {
+        $this->addFormField($name, self::INPUT_TEXT, $options);
+    }
+
+    public function addSelectField( $name, $items, $options = [] )
+    {
+        $this->addFormField($name, self::INPUT_SELECT, compact('items', 'options'));
     }
 
     public function actions()
@@ -53,11 +122,14 @@ abstract class ExtARController extends Controller
      */
     public function actionIndex()
     {
-        $model = $this->getModel();
+        $model        = $this->getModel();
         $dataProvider = $model->search(Yii::$app->request->queryParams);
 
+        $this->mergeActionButtons();
+
         return $this->render('@olgert/yii2/views/index', [
-            'model' => $model,
+            'model'        => $model,
+            'columns'      => $this->gridColumns,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -87,8 +159,9 @@ abstract class ExtARController extends Controller
                 return $this->redirect(['index']);
         }
 
-        return $this->render('form', [
-            'model' => $model,
+        return $this->render('@olgert/yii2/views/form', [
+            'formFields' => $this->formFields,
+            'model'      => $model,
         ]);
     }
 

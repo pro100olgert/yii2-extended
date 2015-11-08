@@ -6,40 +6,31 @@ use kartik\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $model olgert\yii2\ExtActiveRecord */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $columns array */
 
-$this->title                   = Yii::t('app', 'List of {model}', ['model' => $model->getHumanName()]);
+$this->title = Yii::t('app', 'List of {model}', ['model' => $model->getHumanName()]);
+
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="landing-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Create {model}', ['model' => $model->getHumanName()]), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
     <?= GridView::widget([
-        'dataProvider'     => $dataProvider,
-        'filterModel'      => $model,
-        'columns'          => [
-            'id',
-            'user_id',
-            'name',
-            'domain_id',
-            'status',
-            // 't_created',
-            // 't_updated',
-
-            ['class' => 'kartik\grid\ActionColumn'],
-            ['class' => '\kartik\grid\CheckboxColumn']
+        'dataProvider' => $dataProvider,
+        'filterModel'  => $model,
+        'columns'      => $columns,
+        'export'       => false,
+        'panel'        => [
+            'type'    => GridView::TYPE_PRIMARY,
+            'heading' => $this->title,
         ],
-        'headerRowOptions' => ['class' => 'kartik-sheet-style'],
-        'filterRowOptions' => ['class' => 'kartik-sheet-style'],
-//        'pjax'             => true,
-        'pjaxSettings'     => [
-            'neverTimeout' => true,
+        'toolbar'      => [
+            ['content' =>
+                 Html::a('<i class="glyphicon glyphicon-plus"></i>', ['create'],
+                     ['data-pjax' => 0, 'class' => 'btn btn-success', 'title' => Yii::t('app', 'Add')]) . ' ' .
+                 Html::a('<i class="glyphicon glyphicon-repeat"></i>', ['index'],
+                     ['data-pjax' => 0, 'class' => 'btn btn-default', 'title' => Yii::t('app', 'Reset')]),
+            ],
         ],
-        'export'           => false,
     ]); ?>
 
 </div>
